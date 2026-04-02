@@ -8,8 +8,10 @@ const customTemplatesSubPage = SubPageBlueprint.makeWithOverrides({
       path: 'templates',
       title: 'Templates',
       loader: async () => {
-        const { VercelTemplatesPage } = await import('./VercelTemplatesPage');
-        return <VercelTemplatesPage />;
+        const { TemplatesPageWrapper } = await import(
+          './TemplatesPageWrapper'
+        );
+        return <TemplatesPageWrapper />;
       },
     });
   },
