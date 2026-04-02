@@ -1,0 +1,635 @@
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: express-rest-api
+  title: Express REST API
+  description: Scaffold a production-ready REST API with Express.js, OpenAPI docs, Docker support, and CI/CD pipelines.
+  tags:
+    - express
+    - rest
+    - typescript
+    - docker
+spec:
+  owner: group:platform-engineering
+  type: service
+  parameters:
+    - title: Service Details
+      required:
+        - name
+        - port
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Name of the microservice
+          ui:autofocus: true
+        port:
+          title: Port
+          type: number
+          description: Port the service will listen on
+          default: 3000
+        enableAuth:
+          title: Enable Authentication
+          type: boolean
+          description: Include JWT auth middleware
+          default: true
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: fastapi-web-service
+  title: FastAPI Web Service
+  description: Create a Python FastAPI service with automatic OpenAPI schema, async support, SQLAlchemy ORM, and Alembic migrations.
+  tags:
+    - python
+    - fastapi
+    - async
+    - openapi
+spec:
+  owner: group:platform-engineering
+  type: service
+  parameters:
+    - title: Service Configuration
+      required:
+        - name
+        - database
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Name of the FastAPI service
+          ui:autofocus: true
+        database:
+          title: Database
+          type: string
+          description: Database backend to use
+          enum:
+            - PostgreSQL
+            - MySQL
+            - SQLite
+          default: PostgreSQL
+        enableCORS:
+          title: Enable CORS
+          type: boolean
+          default: true
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: grpc-microservice
+  title: gRPC Microservice
+  description: Bootstrap a high-performance gRPC microservice in Go with protobuf definitions, health checks, and Kubernetes manifests.
+  tags:
+    - go
+    - grpc
+    - protobuf
+    - kubernetes
+spec:
+  owner: group:platform-engineering
+  type: service
+  parameters:
+    - title: Service Details
+      required:
+        - name
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Name of the gRPC service
+          ui:autofocus: true
+        includeK8sManifests:
+          title: Include Kubernetes Manifests
+          type: boolean
+          default: true
+        enableTracing:
+          title: Enable OpenTelemetry Tracing
+          type: boolean
+          default: false
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: jupyter-notebook-project
+  title: Jupyter Notebook Project
+  description: Set up a Jupyter notebook environment with conda, common data science libraries, and a standardised project structure.
+  tags:
+    - python
+    - jupyter
+    - data-science
+    - conda
+spec:
+  owner: group:data-science
+  type: notebook
+  parameters:
+    - title: Project Details
+      required:
+        - name
+        - pythonVersion
+      properties:
+        name:
+          title: Project Name
+          type: string
+          description: Name of the notebook project
+          ui:autofocus: true
+        pythonVersion:
+          title: Python Version
+          type: string
+          enum:
+            - '3.11'
+            - '3.12'
+            - '3.13'
+          default: '3.12'
+        includeGPU:
+          title: Include GPU Libraries (CUDA)
+          type: boolean
+          default: false
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: notebook-ml-experiment
+  title: ML Experiment Notebook
+  description: Reproducible machine learning experiment template with MLflow tracking, DVC data versioning, and pre-configured train/eval notebooks.
+  tags:
+    - python
+    - jupyter
+    - mlflow
+    - machine-learning
+spec:
+  owner: group:data-science
+  type: notebook
+  parameters:
+    - title: Experiment Configuration
+      required:
+        - name
+        - framework
+      properties:
+        name:
+          title: Experiment Name
+          type: string
+          description: Name of the ML experiment
+          ui:autofocus: true
+        framework:
+          title: ML Framework
+          type: string
+          enum:
+            - PyTorch
+            - TensorFlow
+            - scikit-learn
+            - XGBoost
+          default: PyTorch
+        enableMLflow:
+          title: Enable MLflow Tracking
+          type: boolean
+          default: true
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: cron-job-scheduler
+  title: Cron Job Scheduler
+  description: Create a Kubernetes CronJob with configurable schedule, retry policies, alerting, and Slack notifications on failure.
+  tags:
+    - kubernetes
+    - cron
+    - scheduling
+    - python
+spec:
+  owner: group:platform-engineering
+  type: cron
+  parameters:
+    - title: Job Configuration
+      required:
+        - name
+        - schedule
+      properties:
+        name:
+          title: Job Name
+          type: string
+          description: Name of the cron job
+          ui:autofocus: true
+        schedule:
+          title: Cron Schedule
+          type: string
+          description: 'Cron expression (e.g. 0 */6 * * *)'
+          default: '0 0 * * *'
+        retryLimit:
+          title: Retry Limit
+          type: number
+          description: Number of retries on failure
+          default: 3
+        notifyOnFailure:
+          title: Notify Slack on Failure
+          type: boolean
+          default: true
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: data-pipeline-cron
+  title: Scheduled Data Pipeline
+  description: Scaffold a scheduled data pipeline with Apache Airflow DAG, dbt transformations, and Great Expectations data quality checks.
+  tags:
+    - airflow
+    - dbt
+    - data-pipeline
+    - scheduling
+spec:
+  owner: group:data-engineering
+  type: cron
+  parameters:
+    - title: Pipeline Details
+      required:
+        - name
+        - schedule
+        - dataWarehouse
+      properties:
+        name:
+          title: Pipeline Name
+          type: string
+          description: Name of the data pipeline
+          ui:autofocus: true
+        schedule:
+          title: Schedule
+          type: string
+          description: 'Cron expression for the DAG'
+          default: '0 2 * * *'
+        dataWarehouse:
+          title: Data Warehouse
+          type: string
+          enum:
+            - BigQuery
+            - Snowflake
+            - Redshift
+          default: BigQuery
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: llm-chatbot-app
+  title: LLM Chatbot Application
+  description: Deploy an AI chatbot powered by OpenAI or Anthropic with streaming responses, conversation memory, and a polished React UI.
+  tags:
+    - ai
+    - llm
+    - chatbot
+    - react
+    - typescript
+spec:
+  owner: group:ai-team
+  type: ai
+  parameters:
+    - title: Chatbot Configuration
+      required:
+        - name
+        - provider
+      properties:
+        name:
+          title: Application Name
+          type: string
+          description: Name of the chatbot application
+          ui:autofocus: true
+        provider:
+          title: LLM Provider
+          type: string
+          enum:
+            - OpenAI
+            - Anthropic
+            - Google Gemini
+            - Ollama (local)
+          default: OpenAI
+        enableStreaming:
+          title: Enable Streaming Responses
+          type: boolean
+          default: true
+        enableRAG:
+          title: Enable RAG (Retrieval-Augmented Generation)
+          type: boolean
+          description: Include vector store and document ingestion pipeline
+          default: false
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: rag-pipeline
+  title: RAG Pipeline
+  description: Build a Retrieval-Augmented Generation pipeline with LangChain, a vector database, document loaders, and an evaluation harness.
+  tags:
+    - ai
+    - rag
+    - langchain
+    - vector-db
+    - python
+spec:
+  owner: group:ai-team
+  type: ai
+  parameters:
+    - title: Pipeline Configuration
+      required:
+        - name
+        - vectorStore
+        - embeddingModel
+      properties:
+        name:
+          title: Pipeline Name
+          type: string
+          description: Name of the RAG pipeline
+          ui:autofocus: true
+        vectorStore:
+          title: Vector Store
+          type: string
+          enum:
+            - Pinecone
+            - Weaviate
+            - Chroma
+            - pgvector
+          default: Chroma
+        embeddingModel:
+          title: Embedding Model
+          type: string
+          enum:
+            - OpenAI text-embedding-3-small
+            - Cohere embed-v3
+            - all-MiniLM-L6-v2 (local)
+          default: OpenAI text-embedding-3-small
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: ml-model-serving
+  title: ML Model Serving API
+  description: Deploy a machine learning model behind a FastAPI endpoint with batching, model versioning, Prometheus metrics, and A/B testing support.
+  tags:
+    - ai
+    - ml-ops
+    - fastapi
+    - python
+    - docker
+spec:
+  owner: group:ai-team
+  type: ai
+  parameters:
+    - title: Model Configuration
+      required:
+        - name
+        - servingFramework
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Name of the model serving API
+          ui:autofocus: true
+        servingFramework:
+          title: Serving Framework
+          type: string
+          enum:
+            - FastAPI + uvicorn
+            - TorchServe
+            - Triton Inference Server
+            - BentoML
+          default: FastAPI + uvicorn
+        enableBatching:
+          title: Enable Request Batching
+          type: boolean
+          default: true
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['fetch-base'].output.entityRef }}
