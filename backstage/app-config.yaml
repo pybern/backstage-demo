@@ -98,6 +98,12 @@ catalog:
       rules:
         - allow: [Template]
 
+    # Mock templates for development showcase
+    - type: file
+      target: ../../examples/mock-templates.yaml
+      rules:
+        - allow: [Template]
+
     # Local example organizational data
     - type: file
       target: ../../examples/org.yaml
